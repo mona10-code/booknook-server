@@ -56,7 +56,7 @@ app.get("/", (req, res) => {
   res.send("BookNook Server is Running!");
 });
 
-// নতুন বই যোগ করার API (POST)
+// API (POST)
 app.post("/api/books", verifyToken, async (req, res) => {
   try {
     if (!db) {

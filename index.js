@@ -135,13 +135,12 @@ app.post("/api/borrows",verifyToken, async (req, res) => {
   }
 });
 
-// ইউজারের ধার নেওয়া বইয়ের লিস্ট আনার API (GET)
+// API (GET)
 app.get("/api/my-borrows", async (req, res) => {
   try {
     const userEmail = req.query.email; // ফ্রন্টএন্ড থেকে ইমেইল নেওয়া
     if (!userEmail) return res.status(400).send({ success: false, message: "Email is required" });
 
-    // নির্দিষ্ট ইউজারের borrows ডাটা খুঁজে বের করা
     const borrows = await db.collection("borrows").find({ userEmail: userEmail }).sort({ borrowDate: -1 }).toArray();
     res.status(200).send({ success: true, data: borrows });
   } catch (error) {
@@ -149,8 +148,7 @@ app.get("/api/my-borrows", async (req, res) => {
   }
 });
 
-// বই ফেরত দেওয়ার API (DELETE)
-// ২. বই ফেরত দেওয়ার API (DELETE) - আপডেট করা হলো
+// API (DELETE)
 app.delete("/api/borrows/:id", async (req, res) => {
   try {
     const id = req.params.id;

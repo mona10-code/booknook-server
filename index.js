@@ -99,14 +99,12 @@ app.get("/api/books/:id", async (req, res) => {
   }
 });
 
-// বই ধার নেওয়ার API (POST)
-// ১. বই ধার নেওয়ার API (POST) - আপডেট করা হলো
+// API (POST)
 app.post("/api/borrows",verifyToken, async (req, res) => {
   try {
     const { bookId, userEmail, ...rest } = req.body;
     const { ObjectId } = require("mongodb");
 
-    // ক. চেক করা: ইউজার কি ইতিমধ্যে এই বই ধার নিয়েছে? (No Double Borrow)
     const existingBorrow = await db.collection("borrows").findOne({ 
       bookId: bookId, 
       userEmail: userEmail 
@@ -115,7 +113,7 @@ app.post("/api/borrows",verifyToken, async (req, res) => {
     if (existingBorrow) {
       return res.status(400).send({ success: false, message: "You have already borrowed this book!" });
     }
-     // খ. চেক করা: বইটির কপি আছে কি না? (Available Copies)
+     // (Available Copies)
     const book = await db.collection("books").findOne({ _id: new ObjectId(bookId) });
     if (!book) return res.status(404).send({ success: false, message: "Book not found" });
     
@@ -123,9 +121,9 @@ app.post("/api/borrows",verifyToken, async (req, res) => {
       return res.status(400).send({ success: false, message: "Book is not available right now!" });
     }
 
-    // গ. borrows কালেকশনে ডাটা সেভ করা
+    // borrows 
     const result = await db.collection("borrows").insertOne({ bookId, userEmail, ...rest });
-    // ঘ. বইয়ের কপি ১ কমিয়ে দেওয়া ($inc ব্যবহার করে)
+    
     await db.collection("books").updateOne(
       { _id: new ObjectId(bookId) },
       { $inc: { totalCopies: -1 } }

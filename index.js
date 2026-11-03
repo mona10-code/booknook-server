@@ -69,7 +69,7 @@ app.post("/api/books", verifyToken, async (req, res) => {
     res.status(500).send({ success: false, message: "Failed to add book", error: error.message });
   }
 });
-// সব বই আনার API (GET)
+// API (GET)
 app.get("/api/books", async (req, res) => {
   try {
     if (!db) {

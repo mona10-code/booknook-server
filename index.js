@@ -15,7 +15,7 @@ app.use(cors({
   credentials: true
 }));
 app.use(express.json());
-// JWT ভেরিফাই করার মিডলওয়্যার (index.js এর ভেতরেই)
+// JWT ভেরিফাই মিডলওয়্যার
 const verifyToken = (req, res, next) => {
   const authHeader = req.headers.authorization;
   

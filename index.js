@@ -75,7 +75,7 @@ app.get("/api/books", async (req, res) => {
     if (!db) {
       return res.status(500).send({ success: false, message: "Database not connected yet!" });
     }
-    // books কালেকশন থেকে সব ডাটা খুঁজে বের করা এবং নতুনগুলো আগে দেখানো
+    
     const books = await db.collection("books").find().sort({ addedAt: -1 }).toArray();
     res.status(200).send({ success: true, data: books });
   } catch (error) {
@@ -83,11 +83,11 @@ app.get("/api/books", async (req, res) => {
   }
 });
 
-// নির্দিষ্ট একটি বই আনার API (GET by ID)
+// API (GET by ID)
 app.get("/api/books/:id", async (req, res) => {
   try {
     const id = req.params.id;
-    const { ObjectId } = require("mongodb"); // আইডি কনভার্ট করার জন্য
+    const { ObjectId } = require("mongodb"); 
     const book = await db.collection("books").findOne({ _id: new ObjectId(id) });
     
     if (!book) {

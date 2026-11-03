@@ -214,10 +214,10 @@ app.patch("/api/books/:id", verifyToken, async (req, res) => {
     const book = await db.collection("books").findOne({ _id: new ObjectId(id) });
     if (!book) return res.status(404).send({ success: false, message: "Book not found" });
 
-    // ২. Authorization চেক
+    // Authorization চেক
     if (book.userEmail !== req.user.email) {
       return res.status(403).send({ success: false, message: "Forbidden: You can only update your own books!" });
-    }
+    } 
     await db.collection("books").updateOne(
       { _id: new ObjectId(id) },
       { $set: updatedData }
@@ -228,7 +228,6 @@ app.patch("/api/books/:id", verifyToken, async (req, res) => {
   }
 });
 
-// সার্ভার চালু করা
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}`);

@@ -49,10 +49,9 @@ async function connectDB() {
   }
 }
 
-// ডাটাবেস কানেক্ট করা
 connectDB();
 
-// বেসিক টেস্ট রুট
+
 app.get("/", (req, res) => {
   res.send("BookNook Server is Running!");
 });

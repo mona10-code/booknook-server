@@ -43,9 +43,7 @@ async function connectDB() {
   try {
     await client.connect();
     db = client.db("booknookDB"); 
-    console.log("MongoDB Connected Successfully!");
   } catch (error) {
-    console.error("MongoDB Connection Error:", error.message);
   }
 }
 
@@ -230,5 +228,4 @@ app.patch("/api/books/:id", verifyToken, async (req, res) => {
 
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => {
-  console.log(`Server is running on port ${PORT}`);
 });

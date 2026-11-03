@@ -154,13 +154,11 @@ app.delete("/api/borrows/:id", async (req, res) => {
     const id = req.params.id;
     const { ObjectId } = require("mongodb");
     
-    // ক. borrows কালেকশন থেকে ডাটা খুঁজে বের করা (বইয়ের আইডি পাওয়ার জন্য)
     const borrowRecord = await db.collection("borrows").findOne({ _id: new ObjectId(id) });
     if (!borrowRecord) return res.status(404).send({ success: false, message: "Borrow record not found" });
 
-    // খ. borrows কালেকশন থেকে ডিলিট করা
     await db.collection("borrows").deleteOne({ _id: new ObjectId(id) });
-    // গ. বইয়ের কপি ১ বাড়িয়ে দেওয়া ($inc ব্যবহার করে)
+    
     await db.collection("books").updateOne(
       { _id: new ObjectId(borrowRecord.bookId) },
       { $inc: { totalCopies: 1 } }
@@ -172,7 +170,7 @@ app.delete("/api/borrows/:id", async (req, res) => {
   }
 });
 
-// নির্দিষ্ট ইউজারের যোগ করা বইয়ের লিস্ট আনার API (GET)
+// API (GET)
 app.get("/api/my-books", async (req, res) => {
   try {
     const userEmail = req.query.email;
@@ -185,17 +183,16 @@ app.get("/api/my-books", async (req, res) => {
   }
 });
 
-// বই ডিলিট করার API (DELETE)
+// API (DELETE)
 app.delete("/api/books/:id", verifyToken, async (req, res) => {
   try {
     const id = req.params.id;
     const { ObjectId } = require("mongodb");
     
-    // ১. বইটা খুঁজে বের করা
     const book = await db.collection("books").findOne({ _id: new ObjectId(id) });
     if (!book) return res.status(404).send({ success: false, message: "Book not found" });
 
-    // ২. Authorization চেক: ইউজার কি বইটার মালিক? (req.user.email টোকেন থেকে আসছে)
+    // Authorization
     if (book.userEmail !== req.user.email) {
       return res.status(403).send({ success: false, message: "Forbidden: You can only delete your own books!" });
     }
@@ -206,7 +203,7 @@ app.delete("/api/books/:id", verifyToken, async (req, res) => {
   }
 });
 
-// বই আপডেট করার API (PATCH)
+// API (PATCH)
 app.patch("/api/books/:id", verifyToken, async (req, res) => {
   try {
     const id = req.params.id;
@@ -214,7 +211,6 @@ app.patch("/api/books/:id", verifyToken, async (req, res) => {
     const updatedData = req.body;
     delete updatedData._id; 
 
-    // ১. বইটা খুঁজে বের করা
     const book = await db.collection("books").findOne({ _id: new ObjectId(id) });
     if (!book) return res.status(404).send({ success: false, message: "Book not found" });
 
